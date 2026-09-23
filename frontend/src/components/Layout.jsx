@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CircleUserRound } from 'lucide-react';
 import { logout } from '../store/authSlice';
 
 export default function Layout() {
@@ -18,6 +17,11 @@ export default function Layout() {
     document.addEventListener('mousedown', onClick);
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
+
+  const goDashboard = () => {
+    setOpen(false);
+    navigate('/');
+  };
 
   const handleLogout = async () => {
     await dispatch(logout({ email: user?.email, token: localStorage.getItem('token') }));
@@ -44,21 +48,21 @@ export default function Layout() {
             onClick={() => setOpen((v) => !v)}
             aria-label="Open profile menu"
           >
-            <CircleUserRound size={28} />
+            <img src="https://dtechsupreme.com/img/default-profile.png" alt="Profile" />
           </button>
 
           {open && (
             <div className="legacy-user-dropdown">
               <div className="legacy-user-dropdown-head">
-                <CircleUserRound size={66} />
-                <strong>{user?.email || 'user@arkentechsolutions.com'}</strong>
+                <img src="https://dtechsupreme.com/img/default-profile.png" alt="Profile" />
+                <strong title={user?.email}>{user?.email || 'user@arkentechsolutions.com'}</strong>
                 <small>Member since</small>
               </div>
 
               <div className="legacy-user-dropdown-stats">
-                <span>Followers</span>
-                <span>Sales</span>
-                <span>Friends</span>
+                <button type="button" onClick={goDashboard}>Followers</button>
+                <button type="button" onClick={goDashboard}>Sales</button>
+                <button type="button" onClick={goDashboard}>Friends</button>
               </div>
 
               <div className="legacy-user-dropdown-actions">

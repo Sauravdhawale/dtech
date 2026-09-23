@@ -253,3 +253,112 @@ button { font: inherit; }
   .legacy-terms-row,
   .settings-pane .btn-danger { margin-left: 0; }
 }
+
+
+/* Profile dropdown pixel-match refinements */
+.legacy-profile-menu { position: relative; }
+
+.legacy-avatar-link {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0,0,0,.22);
+  cursor: pointer;
+}
+
+.legacy-avatar-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.legacy-user-dropdown {
+  top: 34px;
+  right: -3px;
+  width: 207px;
+  border: 1px solid #d7dce1;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  overflow: hidden;
+}
+
+.legacy-user-dropdown-head {
+  min-height: 116px;
+  padding: 10px 8px 8px;
+  background: #0d7ff0;
+}
+
+.legacy-user-dropdown-head > img {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.35);
+  margin-bottom: 8px;
+  background: #79b5e9;
+}
+
+.legacy-user-dropdown-head strong {
+  display: block;
+  width: 100%;
+  padding: 0 2px;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.legacy-user-dropdown-head small {
+  margin-top: 4px;
+  font-size: 7px;
+  line-height: 1;
+}
+
+.legacy-user-dropdown-stats {
+  height: 38px;
+  border-bottom: 1px solid #a5acb3;
+  background: #fff;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.legacy-user-dropdown-stats button {
+  border: 0;
+  background: #fff;
+  color: #6f7780;
+  font-size: 9px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.legacy-user-dropdown-stats button:hover,
+.legacy-user-dropdown-stats button:focus {
+  color: #0d6efd;
+  background: #f8f9fa;
+  text-decoration: underline;
+}
+
+.legacy-user-dropdown-actions {
+  height: 42px;
+  padding: 7px 8px;
+  background: #f5f6f7;
+}
+
+.legacy-user-dropdown-actions button {
+  min-width: 43px;
+  height: 26px;
+  padding: 4px 9px;
+  border: 1px solid #d4d8dc;
+  border-radius: 0;
+  background: #fff;
+  color: #737b83;
+  font-size: 9px;
+}
