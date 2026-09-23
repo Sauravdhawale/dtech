@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import {
   BookOpen,
-  BriefcaseBusiness,
+  Camera,
   CircleUserRound,
   Clock3,
+  FileText,
   Mail,
   MapPin,
   MessageCircle,
-  Pencil,
+  MessageSquare,
+  PenLine,
   Share2,
   ThumbsUp,
-  UsersRound,
+  UserRound,
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -23,21 +25,32 @@ export default function Profile() {
   const user = useSelector((state) => state.auth.currentUser);
   const [tab, setTab] = useState('activity');
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', username: '' });
+  const [agree, setAgree] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    username: '',
+    experience: '',
+    skills: '',
+  });
 
   useEffect(() => {
-    if (user) {
-      setForm({
-        name: user.name || '',
-        email: user.email || '',
-        username: user.username || '',
-      });
-    }
+    if (!user) return;
+    setForm((p) => ({
+      ...p,
+      name: user.name || '',
+      email: user.email || '',
+      username: user.username || '',
+    }));
   }, [user]);
 
   const save = async (e) => {
     e.preventDefault();
     if (!user?._id) return;
+    if (!agree) {
+      toast.info('Please agree to the terms and condition');
+      return;
+    }
     setSaving(true);
     try {
       await updateUser(user._id, {
@@ -67,21 +80,20 @@ export default function Profile() {
         <aside>
           <section className="profile-summary-card">
             <div className="profile-avatar"><CircleUserRound size={82} /></div>
-            <strong>{user?.name || 'CRM User'}</strong>
-            <div className="profile-subtitle">{user?.role || 'User'}</div>
+            <div className="profile-subtitle">Software Engineer</div>
             <hr />
-            <div className="profile-count-row"><b>Accepted Leads</b><span>{user?.totalAccepted || 0}</span></div>
-            <div className="profile-count-row"><b>Under Review</b><span>{user?.totalUnderReview || 0}</span></div>
-            <div className="profile-count-row"><b>Total Leads</b><span>{user?.totalLeads || 0}</span></div>
+            <div className="profile-count-row"><b>Followers</b><span>1,322</span></div>
+            <div className="profile-count-row"><b>Following</b><span>543</span></div>
+            <div className="profile-count-row"><b>Friends</b><span>13,287</span></div>
             <Button className="w-100 mt-2">Follow</Button>
           </section>
 
           <section className="profile-about-card">
             <h2>About Me</h2>
-            <div className="about-item"><BookOpen size={17} /><div><b>Role</b><p>{user?.role || 'N/A'}</p></div></div>
-            <div className="about-item"><MapPin size={17} /><div><b>Location</b><p>Pune, Maharashtra</p></div></div>
-            <div className="about-item"><BriefcaseBusiness size={17} /><div><b>Username</b><p>{user?.username || 'N/A'}</p></div></div>
-            <div className="about-item"><Mail size={17} /><div><b>Email</b><p>{user?.email || 'N/A'}</p></div></div>
+            <div className="about-item"><BookOpen size={16} /><div><b>Education</b><p>B.S. in Computer Science from the University of Tennessee at Knoxville</p></div></div>
+            <div className="about-item"><MapPin size={16} /><div><b>Location</b><p>Malibu, California</p></div></div>
+            <div className="about-item"><PenLine size={16} /><div><b>Skills</b><p>UI DesignCodingJavascriptPHPNode.js</p></div></div>
+            <div className="about-item"><FileText size={16} /><div><b>Notes</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p></div></div>
           </section>
         </aside>
 
@@ -94,18 +106,22 @@ export default function Profile() {
 
           {tab === 'activity' && (
             <div className="profile-tab-content activity-feed">
-              {[
-                ['Campaign activity', `You currently have ${user?.campaignCount || 0} campaigns assigned.`],
-                ['Lead activity', `${user?.totalAccepted || 0} accepted and ${user?.totalUnderReview || 0} under review.`],
-                ['Account activity', Number(user?.loginStatus) === 1 ? 'Your account is currently online.' : 'Your account is currently offline.'],
-              ].map(([title, body], index) => (
-                <article className="activity-post" key={title}>
+              {[1,2,3].map((n) => (
+                <article className="activity-post" key={n}>
                   <CircleUserRound size={34} />
                   <div className="activity-post-body">
-                    <div className="activity-author">{user?.name || 'Arkentech User'}</div>
-                    <small>Shared publicly - {index + 1}:30 PM today</small>
-                    <p>{body}</p>
-                    <div className="activity-actions"><span><Share2 size={14}/> Share</span><span><ThumbsUp size={14}/> Like</span><span className="ms-auto"><MessageCircle size={14}/> Comments (0)</span></div>
+                    <div className="activity-author">Jonathan Burke Jr.</div>
+                    <small>Shared publicly - 7:30 PM today</small>
+                    <p>
+                      Lorem ipsum represents a long-held tradition for designers, typographers and the like.
+                      Some people hate it and argue for its demise, but others ignore the hate as they create
+                      awesome tools to help create filler text for everyone from bacon lovers to Charlie Sheen fans.
+                    </p>
+                    <div className="activity-actions">
+                      <span><Share2 size={13}/> Share</span>
+                      <span><ThumbsUp size={13}/> Like</span>
+                      <span className="ms-auto"><MessageCircle size={13}/> Comments (5)</span>
+                    </div>
                     <div className="response-row"><input placeholder="Response" /><button>Send</button></div>
                   </div>
                 </article>
@@ -115,22 +131,56 @@ export default function Profile() {
 
           {tab === 'timeline' && (
             <div className="profile-tab-content timeline-wrap">
-              <div className="timeline-date red">Today</div>
-              <div className="timeline-item"><span className="timeline-dot blue"><Mail size={15}/></span><div><b>Support Team</b> connected your CRM account <small><Clock3 size={12}/> just now</small></div></div>
-              <div className="timeline-item"><span className="timeline-dot teal"><UsersRound size={15}/></span><div><b>{user?.name || 'User'}</b> profile loaded successfully <small><Clock3 size={12}/> 5 mins ago</small></div></div>
-              <div className="timeline-date green">Account</div>
-              <div className="timeline-item"><span className="timeline-dot purple"><BriefcaseBusiness size={15}/></span><div>Campaign count: <b>{user?.campaignCount || 0}</b> <small><Clock3 size={12}/> current</small></div></div>
+              <div className="timeline-date red">10 Feb. 2014</div>
+
+              <div className="timeline-item expanded">
+                <span className="timeline-dot blue"><Mail size={15}/></span>
+                <div>
+                  <div><b>Support Team</b> sent you an email <small><Clock3 size={12}/> 12:05</small></div>
+                  <p>Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle quora plaxo ideeli hulu weebly balihoo...</p>
+                  <div className="timeline-buttons"><Button size="sm">Read more</Button><Button size="sm" variant="danger">Delete</Button></div>
+                </div>
+              </div>
+
+              <div className="timeline-item compact">
+                <span className="timeline-dot teal"><UserRound size={15}/></span>
+                <div><b>Sarah Young</b> accepted your friend request <small><Clock3 size={12}/> 5 mins ago</small></div>
+              </div>
+
+              <div className="timeline-item expanded">
+                <span className="timeline-dot yellow"><MessageSquare size={15}/></span>
+                <div>
+                  <div><b>Jay White</b> commented on your post <small><Clock3 size={12}/> 27 mins ago</small></div>
+                  <p>Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious and misunderstood!</p>
+                  <Button size="sm" variant="warning">View comment</Button>
+                </div>
+              </div>
+
+              <div className="timeline-date green">3 Jan. 2014</div>
+
+              <div className="timeline-item compact">
+                <span className="timeline-dot purple"><Camera size={15}/></span>
+                <div><b>Mina Lee</b> uploaded new photos <small><Clock3 size={12}/> 2 days ago</small></div>
+              </div>
+
+              <div className="timeline-end"><Clock3 size={16}/></div>
             </div>
           )}
 
           {tab === 'settings' && (
             <div className="profile-tab-content settings-pane">
               <Form onSubmit={save}>
-                <div className="settings-row"><label>Name</label><Form.Control value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} /></div>
-                <div className="settings-row"><label>Email</label><Form.Control type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} /></div>
-                <div className="settings-row"><label>Username</label><Form.Control value={form.username} onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))} /></div>
-                <div className="settings-row"><label>Role</label><Form.Control value={user?.role || ''} disabled /></div>
-                <div className="settings-row"><label>Status</label><Form.Control value={Number(user?.userStatus) === 1 ? 'Active' : 'Inactive'} disabled /></div>
+                <div className="settings-row"><label>Name</label><Form.Control placeholder="Name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} /></div>
+                <div className="settings-row"><label>Email</label><Form.Control type="email" placeholder="Email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} /></div>
+                <div className="settings-row"><label>Name</label><Form.Control placeholder="Name" value={form.username} onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))} /></div>
+                <div className="settings-row"><label>Experience</label><Form.Control as="textarea" rows={2} placeholder="Experience" value={form.experience} onChange={(e) => setForm((p) => ({ ...p, experience: e.target.value }))} /></div>
+                <div className="settings-row"><label>Skills</label><Form.Control placeholder="Skills" value={form.skills} onChange={(e) => setForm((p) => ({ ...p, skills: e.target.value }))} /></div>
+
+                <div className="legacy-terms-row">
+                  <Form.Check type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
+                  <span>I agree to the <a href="#terms">terms and condition</a></span>
+                </div>
+
                 <Button variant="danger" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Submit'}</Button>
               </Form>
             </div>

@@ -1,16 +1,27 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { UserCircle } from 'lucide-react';
+import { CircleUserRound } from 'lucide-react';
 import { logout } from '../store/authSlice';
 
 export default function Layout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.currentUser);
+  const [open, setOpen] = useState(false);
+  const profileRef = useRef(null);
+
+  useEffect(() => {
+    const onClick = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
 
   const handleLogout = async () => {
     await dispatch(logout({ email: user?.email, token: localStorage.getItem('token') }));
+    setOpen(false);
     navigate('/login');
   };
 
@@ -26,11 +37,36 @@ export default function Layout() {
           {(user?.role === 'Admin' || user?.role === 'Super') && <NavLink to="/users">Users</NavLink>}
         </nav>
 
-        <div className="legacy-profile-menu">
-          <NavLink to="/profile" className="legacy-avatar-link" title={user?.name || 'Profile'}>
-            <UserCircle size={28} />
-          </NavLink>
-          <button type="button" className="legacy-logout" onClick={handleLogout}>Logout</button>
+        <div className="legacy-profile-menu" ref={profileRef}>
+          <button
+            type="button"
+            className="legacy-avatar-link"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Open profile menu"
+          >
+            <CircleUserRound size={28} />
+          </button>
+
+          {open && (
+            <div className="legacy-user-dropdown">
+              <div className="legacy-user-dropdown-head">
+                <CircleUserRound size={66} />
+                <strong>{user?.email || 'user@arkentechsolutions.com'}</strong>
+                <small>Member since</small>
+              </div>
+
+              <div className="legacy-user-dropdown-stats">
+                <span>Followers</span>
+                <span>Sales</span>
+                <span>Friends</span>
+              </div>
+
+              <div className="legacy-user-dropdown-actions">
+                <button type="button" onClick={() => { setOpen(false); navigate('/profile'); }}>Profile</button>
+                <button type="button" onClick={handleLogout}>Sign Out</button>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
