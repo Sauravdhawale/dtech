@@ -1,0 +1,7 @@
+.env
+node_modules
+node_modules-
+
+*.zip
+.DS_Store
+__MACOSX
